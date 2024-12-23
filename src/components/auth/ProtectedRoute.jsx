@@ -3,10 +3,10 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
-  const { currentUser } = useAuth();
+  const { currentUser, loading } = useAuth();
 
-  if (currentUser === undefined) {
-    return <div>Loading...</div>; // Handle undefined currentUser state gracefully
+  if (loading) {
+    return <div>Loading...</div>; // Graceful loading state
   }
 
   return currentUser ? children : <Navigate to="/login" />;
