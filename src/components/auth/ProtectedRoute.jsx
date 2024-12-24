@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }) => {
     return <div>Loading...</div>; // Graceful loading state
   }
 
-  return currentUser ? children : <Navigate to="/login" />;
+  return currentUser ? children : <Navigate to="/" />;
 };
 
 export default ProtectedRoute;
