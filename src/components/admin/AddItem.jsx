@@ -1,10 +1,77 @@
 import React, { useState } from "react";
 import { db, auth } from "../firebase"; // Ensure auth is imported
-import { collection, addDoc, doc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 
 const AddItem = () => {
-    const [formData, setFormData] = useState({
-        image: "",
+  const [formData, setFormData] = useState({
+    images: [""],
+    company: "",
+    itemName: "",
+    currentPrice: "",
+    description: "",
+    soldOut: false,
+    category: "",
+    subCategory: "",
+    unit: "",
+    application: "",
+    minQuantity: "",
+    domesticMarket: "",
+    brand: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleImageChange = (index, value) => {
+    setFormData((prev) => {
+      const updatedImages = [...prev.images];
+      updatedImages[index] = value;
+      return { ...prev, images: updatedImages };
+    });
+  };
+
+  const addImageField = () => {
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ""],
+    }));
+  };
+
+  const removeImageField = (index) => {
+    setFormData((prev) => {
+      const updatedImages = [...prev.images];
+      updatedImages.splice(index, 1);
+      return { ...prev, images: updatedImages };
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        alert("You must be logged in as an admin to add items.");
+        return;
+      }
+
+      const itemsCollectionRef = collection(db, "admins", user.uid, "items");
+
+      await addDoc(itemsCollectionRef, {
+        ...formData,
+        currentPrice: Number(formData.currentPrice) || 0, // Ensure currentPrice is a number
+        createdAt: new Date(),
+      });
+
+      alert("Item added successfully!");
+
+      // Reset form after successful submission
+      setFormData({
+        images: [""],
         company: "",
         itemName: "",
         currentPrice: "",
@@ -18,58 +85,11 @@ const AddItem = () => {
         domesticMarket: "",
         brand: "",
       });
-    
-      const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData((prev) => ({
-          ...prev,
-          [name]: type === "checkbox" ? checked : value,
-        }));
-      };
-    
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-          // Get the current admin user
-          const user = auth.currentUser;
-          if (!user) {
-            alert("You must be logged in as an admin to add items.");
-            return;
-          }
-    
-          // Reference the subcollection under the admin's document
-          const itemsCollectionRef = collection(db, "admins", user.uid, "items");
-    
-          // Add the item to the subcollection
-          await addDoc(itemsCollectionRef, {
-            ...formData,
-            currentPrice: Number(formData.currentPrice),
-            createdAt: new Date(),
-          });
-    
-          alert("Item added successfully!");
-    
-          // Reset the form
-          setFormData({
-            image: "",
-            company: "",
-            itemName: "",
-            currentPrice: "",
-            description: "",
-            soldOut: false,
-            category: "",
-            subCategory: "",
-            unit: "",
-            application: "",
-            minQuantity: "",
-            domesticMarket: "",
-            brand: "",
-          });
-        } catch (error) {
-          console.error("Error adding item: ", error);
-          alert("Failed to add item. Please try again.");
-        }
-      };
+    } catch (error) {
+      console.error("Error adding item: ", error);
+      alert("Failed to add item. Please try again.");
+    }
+  };
 
   return (
     <div className="pt-[100px] px-4 lg:px-16">
@@ -83,15 +103,32 @@ const AddItem = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Image URL */}
           <div className="flex flex-col">
-            <label className="font-medium text-gray-700">Image URL</label>
-            <input
-              type="text"
-              name="image"
-              placeholder="Image URL"
-              value={formData.image}
-              onChange={handleChange}
-              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
+            <label className="font-medium text-gray-700">Image URLs</label>
+            {formData.images.map((image, index) => (
+              <div key={index} className="flex items-center gap-4 mb-2">
+                <input
+                  type="text"
+                  placeholder={`Image URL ${index + 1}`}
+                  value={image}
+                  onChange={(e) => handleImageChange(index, e.target.value)}
+                  className="flex-1 input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeImageField(index)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addImageField}
+              className="mt-2 text-blue-500 hover:text-blue-700"
+            >
+              + Add Another Image
+            </button>
           </div>
           {/* Company Name */}
           <div className="flex flex-col">
@@ -167,62 +204,64 @@ const AddItem = () => {
           ></textarea>
         </div>
 
-       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-         {/* Unit */}
-         <div className="flex flex-col">
-          <label className="font-medium text-gray-700">Unit</label>
-          <input
-            type="text"
-            name="unit"
-            placeholder="Unit"
-            value={formData.unit}
-            onChange={handleChange}
-            className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          />
-        </div>
-        {/* Application*/}
-        <div className="flex flex-col">
-          <label className="font-medium text-gray-700">Application</label>
-          <input
-            type="text"
-            name="application"
-            placeholder="Application"
-            value={formData.application}
-            onChange={handleChange}
-            className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          />
-        </div>
-       </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Minimum Order Quantity */}
-        <div className="flex flex-col">
-          <label className="font-medium text-gray-700">
-            Minimum Order Quantity
-          </label>
-          <input
-            type="text"
-            name="minQuantity"
-            placeholder="Minimum Order Quantity"
-            value={formData.minQuantity}
-            onChange={handleChange}
-            className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          />
+          {/* Unit */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">Unit</label>
+            <input
+              type="text"
+              name="unit"
+              placeholder="Unit"
+              value={formData.unit}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+          {/* Application */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">Application</label>
+            <input
+              type="text"
+              name="application"
+              placeholder="Application"
+              value={formData.application}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
         </div>
-        {/* Main Domestic Market */}
-        <div className="flex flex-col">
-          <label className="font-medium text-gray-700">
-            Main Domestic Market
-          </label>
-          <input
-            type="text"
-            name="domesticMarket"
-            placeholder="Main Domestic Market"
-            value={formData.domesticMarket}
-            onChange={handleChange}
-            className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Minimum Order Quantity */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              Minimum Order Quantity
+            </label>
+            <input
+              type="text"
+              name="minQuantity"
+              placeholder="Minimum Order Quantity"
+              value={formData.minQuantity}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+          {/* Main Domestic Market */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              Main Domestic Market
+            </label>
+            <input
+              type="text"
+              name="domesticMarket"
+              placeholder="Main Domestic Market"
+              value={formData.domesticMarket}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
         </div>
-        </div>
+
         {/* Brand Name */}
         <div className="flex flex-col">
           <label className="font-medium text-gray-700">Brand Name</label>
@@ -235,6 +274,7 @@ const AddItem = () => {
             className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
+
         {/* Sold Out Checkbox */}
         <div className="flex items-center gap-2">
           <input
@@ -256,7 +296,7 @@ const AddItem = () => {
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default AddItem
+export default AddItem;

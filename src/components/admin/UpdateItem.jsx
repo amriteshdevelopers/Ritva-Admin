@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { db, auth } from "../firebase";
-import { collection, query, where, getDocs, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 const UpdateItem = () => {
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [formData, setFormData] = useState({
-    image: "",
+    images: [""],
     company: "",
     itemName: "",
     currentPrice: "",
@@ -68,7 +68,7 @@ const UpdateItem = () => {
   const handleEdit = (item) => {
     setSelectedItem(item);
     setFormData({
-      image: item.image || "",
+      images: item.images || [""], // Ensure images are populated
       company: item.company || "",
       itemName: item.itemName || "",
       currentPrice: item.currentPrice || "",
@@ -83,6 +83,27 @@ const UpdateItem = () => {
       brand: item.brand || "",
     });
     setIsPopupOpen(true);
+  };
+
+  const addImageField = () => {
+    setFormData((prev) => ({
+      ...prev,
+      images: [...prev.images, ""],
+    }));
+  };
+
+  const removeImageField = (index) => {
+    setFormData((prev) => {
+      const updatedImages = [...prev.images];
+      updatedImages.splice(index, 1);
+      return { ...prev, images: updatedImages };
+    });
+  };
+
+  const handleImageChange = (index, value) => {
+    const updatedImages = [...formData.images];
+    updatedImages[index] = value;
+    setFormData((prev) => ({ ...prev, images: updatedImages }));
   };
 
   // Handle form submission
@@ -130,7 +151,9 @@ const UpdateItem = () => {
               className="w-full h-40 object-cover rounded-lg mb-4"
             />
             <h2 className="text-lg font-semibold">{item.itemName}</h2>
-            <p className="text-sm text-gray-600">Price: Rs. {item.currentPrice}</p>
+            <p className="text-sm text-gray-600">
+              Price: Rs. {item.currentPrice}
+            </p>
             <button
               onClick={() => handleEdit(item)}
               className="mt-4 bg-blue-500 text-white py-1 px-4 rounded hover:bg-blue-600 transition"
@@ -144,27 +167,42 @@ const UpdateItem = () => {
       {/* Update Popup */}
       {isPopupOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-lg shadow-lg">
+          <div className="bg-white p-6 rounded-lg w-full max-w-lg shadow-lg overflow-y-auto max-h-[80vh]">
             <h2 className="text-xl font-bold mb-4">Update Item</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Image URL */}
-                <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">Image URL</label>
-                  <input
-                    type="text"
-                    name="image"
-                    placeholder="Image URL"
-                    value={formData.image}
-                    onChange={handleChange}
-                    className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  />
-                </div>
+              <div className="flex flex-col">
+                <label className="font-medium text-gray-700">Image URLs</label>
+                {formData.images.map((image, index) => (
+                  <div key={index} className="flex items-center gap-4 mb-2">
+                    <input
+                      type="text"
+                      placeholder={`Image URL ${index + 1}`}
+                      value={image}
+                      onChange={(e) => handleImageChange(index, e.target.value)}
+                      className="flex-1 input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImageField(index)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={addImageField}
+                  className="mt-2 text-blue-500 hover:text-blue-700"
+                >
+                  + Add Another Image
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Company Name */}
                 <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">
-                    Company Name
-                  </label>
+                  <label className="font-medium text-gray-700">Company Name</label>
                   <input
                     type="text"
                     name="company"
@@ -188,9 +226,7 @@ const UpdateItem = () => {
                 </div>
                 {/* Current Price */}
                 <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">
-                    Current Price
-                  </label>
+                  <label className="font-medium text-gray-700">Current Price</label>
                   <input
                     type="number"
                     name="currentPrice"
@@ -214,9 +250,7 @@ const UpdateItem = () => {
                 </div>
                 {/* Sub Category */}
                 <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">
-                    Sub Category
-                  </label>
+                  <label className="font-medium text-gray-700">Sub Category</label>
                   <input
                     type="text"
                     name="subCategory"
@@ -240,7 +274,7 @@ const UpdateItem = () => {
                 ></textarea>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Unit */}
                 <div className="flex flex-col">
                   <label className="font-medium text-gray-700">Unit</label>
@@ -253,11 +287,9 @@ const UpdateItem = () => {
                     className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   />
                 </div>
-                {/* Application*/}
+                {/* Application */}
                 <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">
-                    Application
-                  </label>
+                  <label className="font-medium text-gray-700">Application</label>
                   <input
                     type="text"
                     name="application"
@@ -268,12 +300,11 @@ const UpdateItem = () => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Minimum Order Quantity */}
                 <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">
-                    Minimum Order Quantity
-                  </label>
+                  <label className="font-medium text-gray-700">Minimum Order Quantity</label>
                   <input
                     type="text"
                     name="minQuantity"
@@ -285,9 +316,7 @@ const UpdateItem = () => {
                 </div>
                 {/* Main Domestic Market */}
                 <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">
-                    Main Domestic Market
-                  </label>
+                  <label className="font-medium text-gray-700">Main Domestic Market</label>
                   <input
                     type="text"
                     name="domesticMarket"
@@ -298,6 +327,7 @@ const UpdateItem = () => {
                   />
                 </div>
               </div>
+
               {/* Brand Name */}
               <div className="flex flex-col">
                 <label className="font-medium text-gray-700">Brand Name</label>
@@ -310,6 +340,7 @@ const UpdateItem = () => {
                   className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 />
               </div>
+
               {/* Sold Out Checkbox */}
               <div className="flex items-center gap-2">
                 <input
@@ -321,7 +352,8 @@ const UpdateItem = () => {
                 />
                 <label className="font-medium text-gray-700">Sold Out</label>
               </div>
-              <div className="flex justify-end gap-4">
+
+              <div className="flex justify-end gap-4 mt-4">
                 <button
                   type="button"
                   onClick={() => setIsPopupOpen(false)}
