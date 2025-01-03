@@ -17,6 +17,7 @@ const AddItem = () => {
     minQuantity: "",
     domesticMarket: "",
     brand: "",
+    venderDetails:""
   });
 
   const handleChange = (e) => {
@@ -84,6 +85,7 @@ const AddItem = () => {
         minQuantity: "",
         domesticMarket: "",
         brand: "",
+        venderDetails:"",
       });
     } catch (error) {
       console.error("Error adding item: ", error);
@@ -132,11 +134,11 @@ const AddItem = () => {
           </div>
           {/* Company Name */}
           <div className="flex flex-col">
-            <label className="font-medium text-gray-700">Company Name</label>
+            <label className="font-medium text-gray-700">Vender Name</label>
             <input
               type="text"
               name="company"
-              placeholder="Company Name"
+              placeholder="Vender Name"
               value={formData.company}
               onChange={handleChange}
               className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
@@ -273,6 +275,17 @@ const AddItem = () => {
             onChange={handleChange}
             className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
+        </div>
+        {/* Company Details */}
+        <div className="flex flex-col">
+          <label className="font-medium text-gray-700">Vender Details</label>
+          <textarea
+            name="venderDetails"
+            placeholder="Vender Description"
+            value={formData.venderDetails}
+            onChange={handleChange}
+            className="input-field border border-gray-300 rounded px-3 py-2 h-24 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          ></textarea>
         </div>
 
         {/* Sold Out Checkbox */}
