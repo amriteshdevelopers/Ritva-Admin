@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { collectionGroup, getDocs } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
-import { db } from '../firebase'; // Adjust the path to your Firebase setup file
+import React, { useEffect, useState } from "react";
+import { collectionGroup, getDocs } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { db } from "../firebase"; // Adjust the path to your Firebase setup file
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -11,18 +11,16 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const ordersCollectionGroup = collectionGroup(db, 'orders');
+        const ordersCollectionGroup = collectionGroup(db, "orders");
         const ordersSnapshot = await getDocs(ordersCollectionGroup);
-        const ordersList = ordersSnapshot.docs
-          .map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-          .sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate)); // Sort orders by orderDate descending
-
+        const ordersList = ordersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          docPath: doc.ref.path, // Include the full document path
+          ...doc.data(),
+        })).sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));;
         setOrders(ordersList);
       } catch (error) {
-        console.error('Error fetching orders:', error);
+        console.error("Error fetching orders:", error);
       } finally {
         setLoading(false);
       }
@@ -55,15 +53,21 @@ const Orders = () => {
           </tr>
         </thead>
         <tbody>
-          {orders.map(order => (
+          {orders.map((order) => (
             <tr
               key={order.id}
               className="hover:bg-gray-50 cursor-pointer"
               onClick={() => handleOrderClick(order)}
             >
-              <td className="border border-gray-300 px-4 py-2">{order.accountName}</td>
-              <td className="border border-gray-300 px-4 py-2">{order.accountEmail}</td>
-              <td className="border border-gray-300 px-4 py-2">{order.accountPhone}</td>
+              <td className="border border-gray-300 px-4 py-2">
+                {order.accountName}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {order.accountEmail}
+              </td>
+              <td className="border border-gray-300 px-4 py-2">
+                {order.accountPhone}
+              </td>
               <td className="border border-gray-300 px-4 py-2">
                 {order.items.map((item, index) => (
                   <div key={index}>
@@ -71,12 +75,22 @@ const Orders = () => {
                   </div>
                 ))}
               </td>
-              <td className="border border-gray-300 px-4 py-2">Rs. {order.total.toFixed(2)}</td>
+              <td className="border border-gray-300 px-4 py-2">
+                Rs. {order.total.toFixed(2)}
+              </td>
               <td className="border border-gray-300 px-4 py-2">
                 {new Date(order.orderDate).toLocaleString()}
               </td>
-              <td className="border border-gray-300 px-4 py-2">
-                Proccessing
+              <td
+                className={`border border-gray-300 px-4 py-2 ${
+                  order.orderStatus === "Order in Process"
+                    ? "bg-yellow-500 text-white font-bold"
+                    : order.orderStatus === "Order Completed"
+                    ? "bg-green-500 text-white font-bold"
+                    : "bg-red-600 text-white font-bold"
+                }`}
+              >
+                {order.orderStatus}
               </td>
             </tr>
           ))}
