@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import Logo from "../../assets/logo3.jpg"
 
 const Navbar = () => {
   const [user, setUser] = useState(null); // User state
@@ -36,9 +37,9 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 p-4 flex justify-between items-center">
+    <nav className="bg-blue-600 p-4 flex justify-between items-center h-[65px]">
       {/* Logo */}
-      <div className="text-white text-xl font-bold">Logo</div>
+      <div className="text-white text-xl font-bold"><img src={Logo} className="h-[65px] w-[100px]"/></div>
 
       {/* Navigation Buttons */}
       <div className="flex items-center space-x-4">

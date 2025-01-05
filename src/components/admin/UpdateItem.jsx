@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { db, auth } from "../firebase";
 import { collection, getDocs, doc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { deleteDoc } from "firebase/firestore";
 
 const UpdateItem = () => {
   const [items, setItems] = useState([]);
@@ -132,6 +133,31 @@ const UpdateItem = () => {
     }
   };
 
+   // Handle delete action
+   const handleDelete = async () => {
+    if (!selectedItem) {
+      alert("No item selected for deletion.");
+      return;
+    }
+
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete the item "${selectedItem.itemName}"?`
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const itemRef = doc(db, "admins", adminUid, "items", selectedItem.id);
+      await deleteDoc(itemRef);
+      alert("Item deleted successfully!");
+      setIsPopupOpen(false);
+      setItems((prevItems) =>
+        prevItems.filter((item) => item.id !== selectedItem.id)
+      );
+    } catch (error) {
+      console.error("Error deleting item: ", error);
+    }
+  };
+
   return (
     <div className="pt-[100px] px-4 lg:px-16">
       <h1 className="text-2xl lg:text-4xl font-bold text-center mb-8 text-gray-800">
@@ -146,7 +172,7 @@ const UpdateItem = () => {
             className="bg-white shadow-lg rounded-lg p-4 flex flex-col items-center text-center"
           >
             <img
-              src={item.image}
+              src={item.images[0]}
               alt={item.itemName}
               className="w-full h-40 object-cover rounded-lg mb-4"
             />
@@ -366,7 +392,14 @@ const UpdateItem = () => {
                   className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
                 >
                   Update
-                </button>
+                </button> 
+                <button
+                type="button"
+                onClick={handleDelete}
+                className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600 transition"
+              >
+                Delete
+              </button>
               </div>
             </form>
           </div>
