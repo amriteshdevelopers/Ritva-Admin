@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
-import Logo from "../../assets/logo3.jpg"
 
 const Navbar = () => {
   const [user, setUser] = useState(null); // User state
@@ -12,34 +11,46 @@ const Navbar = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (currentUser) {
-        // Fetch admin data from Firestore
-        const adminDoc = await getDoc(doc(db, 'admins', currentUser.uid));
-        if (adminDoc.exists()) {
-          setUser({ name: adminDoc.data().name, email: currentUser.email });
-        } else {
+        try {
+          const adminDoc = await getDoc(doc(db, 'admins', currentUser.uid));
+          if (adminDoc.exists()) {
+            setUser({ name: adminDoc.data().name, email: currentUser.email });
+          } else {
+            console.error('Admin document not found');
+            setUser(null);
+          }
+        } catch (error) {
+          console.error('Error fetching admin data:', error.message);
           setUser(null);
         }
       } else {
         setUser(null);
       }
     });
-
-    return () => unsubscribe(); // Cleanup listener on component unmount
+  
+    return () => unsubscribe();
   }, []);
+  
 
   const handleLoginClick = () => {
     navigate('/');
   };
 
   const handleLogout = () => {
-    auth.signOut();
-    setUser(null);
+    auth.signOut()
+      .then(() => {
+        setUser(null); // Clear the user state
+        navigate('/'); // Redirect to the login page (assuming '/' is your login page)
+      })
+      .catch((error) => {
+        console.error('Error during logout:', error.message);
+      });
   };
 
   return (
-    <nav className="bg-blue-600 p-4 flex justify-between items-center h-[65px]">
+    <nav className="bg-blue-600 p-4 flex justify-between items-center">
       {/* Logo */}
-      <div className="text-white text-xl font-bold"><img src={Logo} className="h-[65px] w-[100px]"/></div>
+      <div className="text-white text-xl font-bold">Logo</div>
 
       {/* Navigation Buttons */}
       <div className="flex items-center space-x-4">

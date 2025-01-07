@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { collectionGroup, getDocs } from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import { db } from "../firebase"; // Adjust the path to your Firebase setup file
+import { collection, getDocs } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -11,17 +11,23 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const ordersCollectionGroup = collectionGroup(db, "orders");
-        const ordersSnapshot = await getDocs(ordersCollectionGroup);
-        const ordersList = ordersSnapshot.docs.map((doc) => ({
-          id: doc.id,
-          docPath: doc.ref.path, // Include the full document path
-          ...doc.data(),
-        })).sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));;
-        setOrders(ordersList);
+        const usersCollection = collection(db, "Users");
+        const usersSnapshot = await getDocs(usersCollection);
+
+        let allOrders = [];
+        for (const userDoc of usersSnapshot.docs) {
+          const ordersCollection = collection(userDoc.ref, "orders");
+          const ordersSnapshot = await getDocs(ordersCollection);
+
+          ordersSnapshot.docs.forEach((orderDoc) => {
+            allOrders.push({ id: orderDoc.id, ...orderDoc.data() });
+          });
+        }
+
+        setOrders(allOrders);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
-      } finally {
         setLoading(false);
       }
     };
@@ -32,10 +38,9 @@ const Orders = () => {
   if (loading) {
     return <div>Loading orders...</div>;
   }
-
   const handleOrderClick = (order) => {
     navigate(`/order-details/${order.id}`, { state: { order } });
-  };
+  }
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -49,7 +54,6 @@ const Orders = () => {
             <th className="border border-gray-300 px-4 py-2">Items</th>
             <th className="border border-gray-300 px-4 py-2">Total Amount</th>
             <th className="border border-gray-300 px-4 py-2">Order Date</th>
-            <th className="border border-gray-300 px-4 py-2">Current status</th>
           </tr>
         </thead>
         <tbody>
@@ -76,21 +80,10 @@ const Orders = () => {
                 ))}
               </td>
               <td className="border border-gray-300 px-4 py-2">
-                Rs. {order.total.toFixed(2)}
+                Rs. {order.total?.toFixed(2)}
               </td>
               <td className="border border-gray-300 px-4 py-2">
                 {new Date(order.orderDate).toLocaleString()}
-              </td>
-              <td
-                className={`border border-gray-300 px-4 py-2 ${
-                  order.orderStatus === "Order in Process"
-                    ? "bg-yellow-500 text-white font-bold"
-                    : order.orderStatus === "Order Completed"
-                    ? "bg-green-500 text-white font-bold"
-                    : "bg-red-600 text-white font-bold"
-                }`}
-              >
-                {order.orderStatus}
               </td>
             </tr>
           ))}
