@@ -5,7 +5,7 @@ import { collection, addDoc } from "firebase/firestore";
 const AddItem = () => {
   const [formData, setFormData] = useState({
     images: [""],
-    company: "",
+    qualityStandard: "",
     itemName: "",
     currentPrice: "",
     description: "",
@@ -17,7 +17,7 @@ const AddItem = () => {
     minQuantity: "",
     domesticMarket: "",
     brand: "",
-    venderDetails:""
+    certificatin:""
   });
 
   const handleChange = (e) => {
@@ -73,7 +73,7 @@ const AddItem = () => {
       // Reset form after successful submission
       setFormData({
         images: [""],
-        company: "",
+        qualityStandard: "",
         itemName: "",
         currentPrice: "",
         description: "",
@@ -85,7 +85,7 @@ const AddItem = () => {
         minQuantity: "",
         domesticMarket: "",
         brand: "",
-        venderDetails:"",
+        certificatin:"",
       });
     } catch (error) {
       console.error("Error adding item: ", error);
@@ -132,18 +132,7 @@ const AddItem = () => {
               + Add Another Image
             </button>
           </div>
-          {/* Company Name */}
-          <div className="flex flex-col">
-            <label className="font-medium text-gray-700">Vender Name</label>
-            <input
-              type="text"
-              name="company"
-              placeholder="Vender Name"
-              value={formData.company}
-              onChange={handleChange}
-              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-          </div>
+          
           {/* Item Name */}
           <div className="flex flex-col">
             <label className="font-medium text-gray-700">Item Name</label>
@@ -160,7 +149,7 @@ const AddItem = () => {
           <div className="flex flex-col">
             <label className="font-medium text-gray-700">Current Price</label>
             <input
-              type="number"
+              type="text"
               name="currentPrice"
               placeholder="Current Price"
               value={formData.currentPrice}
@@ -188,6 +177,18 @@ const AddItem = () => {
               name="subCategory"
               placeholder="Sub Category"
               value={formData.subCategory}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+          {/* Quality Standard */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">Quality Standard</label>
+            <input
+              type="text"
+              name="qualityStandard"
+              placeholder="Quality Standard"
+              value={formData.qualityStandard}
               onChange={handleChange}
               className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
@@ -251,7 +252,7 @@ const AddItem = () => {
           {/* Main Domestic Market */}
           <div className="flex flex-col">
             <label className="font-medium text-gray-700">
-              Main Domestic Market
+            Resourcing Warehouse
             </label>
             <input
               type="text"
@@ -262,9 +263,7 @@ const AddItem = () => {
               className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
           </div>
-        </div>
-
-        {/* Brand Name */}
+          {/* Brand Name */}
         <div className="flex flex-col">
           <label className="font-medium text-gray-700">Brand Name</label>
           <input
@@ -276,16 +275,18 @@ const AddItem = () => {
             className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
-        {/* Company Details */}
+        {/* Brand Name */}
         <div className="flex flex-col">
-          <label className="font-medium text-gray-700">Vender Details</label>
-          <textarea
-            name="venderDetails"
-            placeholder="Vender Description"
-            value={formData.venderDetails}
+          <label className="font-medium text-gray-700">Certification</label>
+          <input
+            type="text"
+            name="certificatin"
+            placeholder="Certification"
+            value={formData.certificatin}
             onChange={handleChange}
-            className="input-field border border-gray-300 rounded px-3 py-2 h-24 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          ></textarea>
+            className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
+        </div>
         </div>
 
         {/* Sold Out Checkbox */}
@@ -299,6 +300,7 @@ const AddItem = () => {
           />
           <label className="font-medium text-gray-700">Sold Out</label>
         </div>
+        
 
         {/* Submit Button */}
         <button

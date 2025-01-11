@@ -9,7 +9,7 @@ const UpdateItem = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [formData, setFormData] = useState({
     images: [""],
-    company: "",
+    qualityStandard: "",
     itemName: "",
     currentPrice: "",
     description: "",
@@ -21,6 +21,7 @@ const UpdateItem = () => {
     minQuantity: "",
     domesticMarket: "",
     brand: "",
+    certificatin:"",
   });
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [adminUid, setAdminUid] = useState(null);
@@ -70,7 +71,7 @@ const UpdateItem = () => {
     setSelectedItem(item);
     setFormData({
       images: item.images || [""], // Ensure images are populated
-      company: item.company || "",
+      qualityStandard: item.qualityStandard || "",
       itemName: item.itemName || "",
       currentPrice: item.currentPrice || "",
       description: item.description || "",
@@ -81,7 +82,7 @@ const UpdateItem = () => {
       application: item.application || "",
       minQuantity: item.minQuantity || "",
       domesticMarket: item.domesticMarket || "",
-      brand: item.brand || "",
+      certificatin: item.certificatin || "",
     });
     setIsPopupOpen(true);
   };
@@ -226,18 +227,7 @@ const UpdateItem = () => {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Company Name */}
-                <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">Company Name</label>
-                  <input
-                    type="text"
-                    name="company"
-                    placeholder="Company Name"
-                    value={formData.company}
-                    onChange={handleChange}
-                    className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  />
-                </div>
+                
                 {/* Item Name */}
                 <div className="flex flex-col">
                   <label className="font-medium text-gray-700">Item Name</label>
@@ -286,6 +276,18 @@ const UpdateItem = () => {
                     className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                   />
                 </div>
+                {/* Quality Standard */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">Quality Standard</label>
+            <input
+              type="text"
+              name="qualityStandard"
+              placeholder="Quality Standard"
+              value={formData.qualityStandard}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
               </div>
 
               {/* Description */}
@@ -342,16 +344,18 @@ const UpdateItem = () => {
                 </div>
                 {/* Main Domestic Market */}
                 <div className="flex flex-col">
-                  <label className="font-medium text-gray-700">Main Domestic Market</label>
-                  <input
-                    type="text"
-                    name="domesticMarket"
-                    placeholder="Main Domestic Market"
-                    value={formData.domesticMarket}
-                    onChange={handleChange}
-                    className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                  />
-                </div>
+            <label className="font-medium text-gray-700">
+            Resourcing Warehouse
+            </label>
+            <input
+              type="text"
+              name="domesticMarket"
+              placeholder="Main Domestic Market"
+              value={formData.domesticMarket}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
               </div>
 
               {/* Brand Name */}
@@ -366,6 +370,18 @@ const UpdateItem = () => {
                   className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                 />
               </div>
+              {/* Brand Name */}
+        <div className="flex flex-col">
+          <label className="font-medium text-gray-700">Certification</label>
+          <input
+            type="text"
+            name="certificatin"
+            placeholder="Certification"
+            value={formData.certificatin}
+            onChange={handleChange}
+            className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          />
+        </div>
 
               {/* Sold Out Checkbox */}
               <div className="flex items-center gap-2">
