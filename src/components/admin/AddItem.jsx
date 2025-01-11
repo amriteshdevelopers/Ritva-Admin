@@ -145,18 +145,6 @@ const AddItem = () => {
               className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
           </div>
-          {/* Current Price */}
-          <div className="flex flex-col">
-            <label className="font-medium text-gray-700">Current Price</label>
-            <input
-              type="text"
-              name="currentPrice"
-              placeholder="Current Price"
-              value={formData.currentPrice}
-              onChange={handleChange}
-              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-          </div>
           {/* Category */}
           <div className="flex flex-col">
             <label className="font-medium text-gray-700">Category</label>
@@ -181,88 +169,6 @@ const AddItem = () => {
               className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
             />
           </div>
-          {/* Quality Standard */}
-          <div className="flex flex-col">
-            <label className="font-medium text-gray-700">Quality Standard</label>
-            <input
-              type="text"
-              name="qualityStandard"
-              placeholder="Quality Standard"
-              value={formData.qualityStandard}
-              onChange={handleChange}
-              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-          </div>
-        </div>
-
-        {/* Description */}
-        <div className="flex flex-col">
-          <label className="font-medium text-gray-700">Description</label>
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={formData.description}
-            onChange={handleChange}
-            className="input-field border border-gray-300 rounded px-3 py-2 h-24 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-          ></textarea>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Unit */}
-          <div className="flex flex-col">
-            <label className="font-medium text-gray-700">Unit</label>
-            <input
-              type="text"
-              name="unit"
-              placeholder="Unit"
-              value={formData.unit}
-              onChange={handleChange}
-              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-          </div>
-          {/* Application */}
-          <div className="flex flex-col">
-            <label className="font-medium text-gray-700">Application</label>
-            <input
-              type="text"
-              name="application"
-              placeholder="Application"
-              value={formData.application}
-              onChange={handleChange}
-              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Minimum Order Quantity */}
-          <div className="flex flex-col">
-            <label className="font-medium text-gray-700">
-              Minimum Order Quantity
-            </label>
-            <input
-              type="text"
-              name="minQuantity"
-              placeholder="Minimum Order Quantity"
-              value={formData.minQuantity}
-              onChange={handleChange}
-              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-          </div>
-          {/* Main Domestic Market */}
-          <div className="flex flex-col">
-            <label className="font-medium text-gray-700">
-            Resourcing Warehouse
-            </label>
-            <input
-              type="text"
-              name="domesticMarket"
-              placeholder="Main Domestic Market"
-              value={formData.domesticMarket}
-              onChange={handleChange}
-              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-            />
-          </div>
           {/* Brand Name */}
         <div className="flex flex-col">
           <label className="font-medium text-gray-700">Brand Name</label>
@@ -275,6 +181,93 @@ const AddItem = () => {
             className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
           />
         </div>
+        {/* Minimum Order Quantity */}
+        <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+              Minimum Order Quantity
+            </label>
+            <input
+              type="text"
+              name="minQuantity"
+              placeholder="Minimum Order Quantity"
+              value={formData.minQuantity}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+          {/* Quality Standard */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">Quality Standard</label>
+            <input
+              type="text"
+              name="qualityStandard"
+              placeholder="Quality Standard"
+              value={formData.qualityStandard}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+
+          {/* Current Price */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">Price</label>
+            <input
+              type="text"
+              name="currentPrice"
+              placeholder="Price"
+              value={formData.currentPrice}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+        </div>
+
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Application */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">Application</label>
+            <input
+              type="text"
+              name="application"
+              placeholder="Application"
+              value={formData.application}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+          {/* Unit */}
+          <div className="flex flex-col">
+            <label className="font-medium text-gray-700">Unit</label>
+            <input
+              type="text"
+              name="unit"
+              placeholder="Unit"
+              value={formData.unit}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
+          
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          
+        {/* Main Domestic Market */}
+        <div className="flex flex-col">
+            <label className="font-medium text-gray-700">
+            Resourcing Warehouse
+            </label>
+            <input
+              type="text"
+              name="domesticMarket"
+              placeholder="Main Domestic Market"
+              value={formData.domesticMarket}
+              onChange={handleChange}
+              className="input-field border border-gray-300 rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          </div>
         {/* Brand Name */}
         <div className="flex flex-col">
           <label className="font-medium text-gray-700">Certification</label>
@@ -288,6 +281,18 @@ const AddItem = () => {
           />
         </div>
         </div>
+        {/* Description */}
+        <div className="flex flex-col">
+          <label className="font-medium text-gray-700">Description</label>
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleChange}
+            className="input-field border border-gray-300 rounded px-3 py-2 h-24 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+          ></textarea>
+        </div>
+
 
         {/* Sold Out Checkbox */}
         <div className="flex items-center gap-2">
