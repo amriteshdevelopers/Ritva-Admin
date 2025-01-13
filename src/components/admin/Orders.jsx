@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState("today"); // Default filter is "today"
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,7 +26,11 @@ const Orders = () => {
           });
         }
 
+        // Sort orders by orderDate in descending order
+        allOrders.sort((a, b) => new Date(b.orderDate) - new Date(a.orderDate));
+
         setOrders(allOrders);
+        handleFilterChange("today", allOrders); // Automatically filter "today" on load
         setLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -35,16 +41,80 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
+  const handleFilterChange = (filterType, ordersToFilter = orders) => {
+    setFilter(filterType);
+    const now = new Date();
+
+    const filtered = ordersToFilter.filter((order) => {
+      const orderDate = new Date(order.orderDate);
+
+      if (filterType === "today") {
+        return orderDate.toDateString() === now.toDateString();
+      } else if (filterType === "last2days") {
+        const twoDaysAgo = new Date(now);
+        twoDaysAgo.setDate(now.getDate() - 2);
+        return orderDate >= twoDaysAgo;
+      } else if (filterType === "lastWeek") {
+        const oneWeekAgo = new Date(now);
+        oneWeekAgo.setDate(now.getDate() - 7);
+        return orderDate >= oneWeekAgo;
+      } else if (filterType === "lastMonth") {
+        const oneMonthAgo = new Date(now);
+        oneMonthAgo.setMonth(now.getMonth() - 1);
+        return orderDate >= oneMonthAgo;
+      }
+      return true; // Default: show all orders
+    });
+
+    setFilteredOrders(filtered);
+  };
+
   if (loading) {
     return <div>Loading orders...</div>;
   }
+
   const handleOrderClick = (order) => {
     navigate(`/order-details/${order.id}`, { state: { order } });
-  }
+  };
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6">All User Orders</h1>
+
+      {/* Filter Buttons */}
+      <div className="mb-4">
+        <button
+          className={`px-4 py-2 mr-2 ${filter === "today" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          onClick={() => handleFilterChange("today")}
+        >
+          Today
+        </button>
+        <button
+          className={`px-4 py-2 mr-2 ${filter === "all" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          onClick={() => handleFilterChange("all")}
+        >
+          All Orders
+        </button>
+        <button
+          className={`px-4 py-2 mr-2 ${filter === "last2days" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          onClick={() => handleFilterChange("last2days")}
+        >
+          Last 2 Days
+        </button>
+        <button
+          className={`px-4 py-2 mr-2 ${filter === "lastWeek" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          onClick={() => handleFilterChange("lastWeek")}
+        >
+          Last Week
+        </button>
+        <button
+          className={`px-4 py-2 ${filter === "lastMonth" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+          onClick={() => handleFilterChange("lastMonth")}
+        >
+          Last Month
+        </button>
+      </div>
+
       <table className="w-full border-collapse border border-gray-300">
         <thead>
           <tr className="bg-gray-100">
@@ -57,7 +127,7 @@ const Orders = () => {
           </tr>
         </thead>
         <tbody>
-          {orders.map((order) => (
+          {filteredOrders.map((order) => (
             <tr
               key={order.id}
               className="hover:bg-gray-50 cursor-pointer"

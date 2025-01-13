@@ -4,6 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
+
 const Navbar = () => {
   const [user, setUser] = useState(null); // User state
   const navigate = useNavigate();
@@ -50,7 +51,9 @@ const Navbar = () => {
   return (
     <nav className="bg-blue-600 p-4 flex justify-between items-center">
       {/* Logo */}
-      <div className="text-white text-xl font-bold">Logo</div>
+      <h5 className="sm:text-3xl text-lg text-white font-semibold ">
+                    RitvaBuild
+                  </h5>
 
       {/* Navigation Buttons */}
       <div className="flex items-center space-x-4">

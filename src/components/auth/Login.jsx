@@ -45,11 +45,6 @@ const Login = () => {
     <div className="flex min-h-screen items-center justify-center bg-gray-100 py-12 px-6 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-lg shadow-md">
         <div>
-          <img
-            className="mx-auto h-12 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
-          />
           <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
             Sign In To Your Account
           </h2>
